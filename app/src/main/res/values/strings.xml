@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">InventoryApp</string>
+    <string name="add_dummy_data">add dummy data</string>
+    <string name="delete_all_items">delete all items</string>
+    <string name="test_list">test</string>
+    <string name="text_gone">No item in the list, Please tap on the button and insert a new one.</string>
+    <string name="editor_insert_item_failed">failed to insert the item</string>
+    <string name="editor_insert_item_successful">item inserted </string>
+    <string name="editor_update_item_failed">failed to update the item</string>
+    <string name="editor_update_item_successful">item update </string>
+    <string name="unsaved_changes_dialog_msg">The changes are unsalved, would like to retourn back?</string>
+    <string name="discard">discard</string>
+    <string name="keep_editing">keep editing</string>
+    <string name="delete_dialog_msg">would you like to thelete the item?</string>
+    <string name="delete">Delte</string>
+    <string name="cancel">Cancel</string>
+    <string name="editor_delete_item_failed">unable to delete the item</string>
+    <string name="editor_delete_item_successful">item deleted</string>
+</resources>

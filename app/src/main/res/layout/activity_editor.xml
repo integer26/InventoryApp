@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".EditorActivity"
+        >
+
+    <EditText
+        android:id="@+id/EditProdName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Product Name"/>
+
+    <EditText
+        android:id="@+id/EditProdPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Product Price"
+        android:inputType="number"/>
+
+    <EditText
+        android:id="@+id/EditProdQuantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Product Quantity"
+        android:inputType="number"/>
+
+    <EditText
+        android:id="@+id/EditSuppName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Supplier Name"/>
+
+    <EditText
+        android:id="@+id/EditSuppPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Supplier Phone"
+        android:inputType="number"/>
+
+
+
+
+
+</LinearLayout>
