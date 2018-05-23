@@ -27,39 +27,39 @@ import android.widget.Toast;
 import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
 
     /**
-     * Allows user to create a new pet or edit an existing one.
+     * Allows user to create a new item or edit an existing one.
      */
     public class EditorActivity extends AppCompatActivity implements
             LoaderManager.LoaderCallbacks<Cursor> {
 
-        /** Identifier for the pet data loader */
+        /** Identifier for the item data loader */
         private static final int EXISTING_ITEM_LOADER = 0;
 
-        /** Content URI for the existing pet (null if it's a new pet) */
+        /** Content URI for the existing item (null if it's a new item) */
         private Uri mCurrentitemUri;
 
-        /** EditText field to enter the pet's name */
+        /** EditText field to enter the item's name */
         private EditText mNameEditText;
 
-        /** EditText field to enter the pet's breed */
+        /** EditText field to enter the item's price */
         private EditText mPriceEditText;
 
-        /** EditText field to enter the pet's weight */
+        /** EditText field to enter the item's quantity */
         private EditText mquantityEditText;
 
-        /** EditText field to enter the pet's gender */
+        /** EditText field to enter the item supplier name */
         private EditText mSuppNameEditText;
 
-        /** EditText field to enter the pet's gender */
+        /** EditText field to enter the item's supplier phone */
         private EditText mSuppPhoneEditText;
 
 
-        /** Boolean flag that keeps track of whether the pet has been edited (true) or not (false) */
+        /** Boolean flag that keeps track of whether the supplier name has been edited (true) or not (false) */
         private boolean mItemHasChanged = false;
 
         /**
          * OnTouchListener that listens for any user touches on a View, implying that they are modifying
-         * the view, and we change the mPetHasChanged boolean to true.
+         * the view, and we change the mItemHasChanged boolean to true.
          */
         private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
             @Override
@@ -76,24 +76,24 @@ import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
             setContentView(R.layout.activity_editor);
 
             // Examine the intent that was used to launch this activity,
-            // in order to figure out if we're creating a new pet or editing an existing one.
+            // in order to figure out if we're creating a new item or editing an existing one.
             Intent intent = getIntent();
             mCurrentitemUri = intent.getData();
 
-            // If the intent DOES NOT contain a pet content URI, then we know that we are
-            // creating a new pet.
+            // If the intent DOES NOT contain a item content URI, then we know that we are
+            // creating a new item.
             if (mCurrentitemUri == null) {
-                // This is a new pet, so change the app bar to say "Add a Pet"
+                // This is a new pet, so change the app bar to say "New Item"
                 setTitle("New Item");
 
                 // Invalidate the options menu, so the "Delete" menu option can be hidden.
-                // (It doesn't make sense to delete a pet that hasn't been created yet.)
+                // (It doesn't make sense to delete an item that hasn't been created yet.)
                 invalidateOptionsMenu();
             } else {
-                // Otherwise this is an existing pet, so change app bar to say "Edit Pet"
+                // Otherwise this is an existing item, so change app bar to say "Edit Item"
                 setTitle("Edit Item");
 
-                // Initialize a loader to read the pet data from the database
+                // Initialize a loader to read the item data from the database
                 // and display the current values in the editor
                 getLoaderManager().initLoader(EXISTING_ITEM_LOADER, null, this);
             }
@@ -118,9 +118,9 @@ import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
 
 
         /**
-         * Get user input from editor and save pet into database.
+         * Get user input from editor and save item into database.
          */
-        private void savePet() {
+        private void saveItem() {
             // Read from input fields
             // Use trim to eliminate leading or trailing white space
             String nameString = mNameEditText.getText().toString().trim();
@@ -129,7 +129,7 @@ import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
             String SuppNameString = mSuppNameEditText.getText().toString().trim();
             String SuppPhoneString = mSuppPhoneEditText.getText().toString().trim();
 
-            // Check if this is supposed to be a new pet
+            // Check if this is supposed to be a new item
             // and check if all the fields in the editor are blank
             if (mCurrentitemUri == null &&
                     TextUtils.isEmpty(nameString) &&
@@ -137,13 +137,13 @@ import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
                     TextUtils.isEmpty(quantityString) &&
                     TextUtils.isEmpty(SuppNameString) &&
                     TextUtils.isEmpty(SuppPhoneString)) {
-                // Since no fields were modified, we can return early without creating a new pet.
+                // Since no fields were modified, we can return early without creating a new item.
                 // No need to create ContentValues and no need to do any ContentProvider operations.
                 return;
             }
 
             // Create a ContentValues object where column names are the keys,
-            // and pet attributes from the editor are the values.
+            // and item attributes from the editor are the values.
             ContentValues values = new ContentValues();
             values.put(InventoryEntry.COLUMN_PRODUCT_NAME, nameString);
             values.put(InventoryEntry.COLUMN_PRODUCT_PRICE, priceString);
@@ -151,10 +151,10 @@ import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
             values.put(InventoryEntry.COLUMN_SUPPLIER_NAME, SuppNameString);
             values.put(InventoryEntry.COLUMN_SUPPLIER_PHONE, SuppPhoneString);
 
-            // Determine if this is a new or existing pet by checking if mCurrentPetUri is null or not
+            // Determine if this is a new or existing item by checking if mCurrentPetUri is null or not
             if (mCurrentitemUri == null) {
-                // This is a NEW pet, so insert a new pet into the provider,
-                // returning the content URI for the new pet.
+                // This is a NEW pet, so insert a new item into the provider,
+                // returning the content URI for the new item.
                 Uri newUri = getContentResolver().insert(InventoryEntry.CONTENT_URI, values);
 
                 // Show a toast message depending on whether or not the insertion was successful.
@@ -168,7 +168,7 @@ import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
                             Toast.LENGTH_SHORT).show();
                 }
             } else {
-                // Otherwise this is an EXISTING pet, so update the pet with content URI: mCurrentPetUri
+                // Otherwise this is an EXISTING item, so update the item with content URI: mCurrentPetUri
                 // and pass in the new ContentValues. Pass in null for the selection and selection args
                 // because mCurrentPetUri will already identify the correct row in the database that
                 // we want to modify.
@@ -202,7 +202,7 @@ import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
         @Override
         public boolean onPrepareOptionsMenu(Menu menu) {
             super.onPrepareOptionsMenu(menu);
-            // If this is a new pet, hide the "Delete" menu item.
+            // If this is a new item, hide the "Delete" menu item.
             if (mCurrentitemUri == null) {
                 MenuItem menuItem = menu.findItem(R.id.action_delete);
                 menuItem.setVisible(false);
@@ -216,8 +216,8 @@ import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
             switch (item.getItemId()) {
                 // Respond to a click on the "Save" menu option
                 case R.id.action_save:
-                    // Save pet to database
-                    savePet();
+                    // Save item to database
+                    saveItem();
                     // Exit activity
                     finish();
                     return true;
@@ -229,7 +229,7 @@ import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
                 // Respond to a click on the "Up" arrow button in the app bar
                 case android.R.id.home:
                     // If the pet hasn't changed, continue with navigating up to parent activity
-                    // which is the {@link CatalogActivity}.
+                    // which is the {@link MainActivity}.
                     if (!mItemHasChanged) {
                         NavUtils.navigateUpFromSameTask(EditorActivity.this);
                         return true;
@@ -282,7 +282,7 @@ import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
 
         @Override
         public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-            // Since the editor shows all pet attributes, define a projection that contains
+            // Since the editor shows all item attributes, define a projection that contains
             // all columns from the pet table
             String[] projection = {
                     InventoryEntry._ID,
@@ -321,14 +321,14 @@ import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
 
                 // Extract out the value from the Cursor for the given column index
                 String name = cursor.getString(nameColumnIndex);
-                float price = cursor.getFloat (priceColumnIndex);
+                int price = cursor.getInt (priceColumnIndex);
                 int quantity = cursor.getInt(quantityColumnIndex);
                 String suppName = cursor.getString (suppNameColumnIndex);
                 String suppPhone = cursor.getString (suppPhoneColumnIndex);;
 
                 // Update the views on the screen with the values from the database
                 mNameEditText.setText(name);
-                mPriceEditText.setText(Float.toString ( price ));
+                mPriceEditText.setText( price );
                 mquantityEditText.setText(quantity);
                 mSuppNameEditText.setText(suppName);
                 mSuppPhoneEditText.setText(suppPhone);
@@ -356,14 +356,14 @@ import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
         private void showUnsavedChangesDialog(
                 DialogInterface.OnClickListener discardButtonClickListener) {
             // Create an AlertDialog.Builder and set the message, and click listeners
-            // for the postivie and negative buttons on the dialog.
+            // for the postive and negative buttons on the dialog.
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(R.string.unsaved_changes_dialog_msg);
             builder.setPositiveButton(R.string.discard, discardButtonClickListener);
             builder.setNegativeButton(R.string.keep_editing, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     // User clicked the "Keep editing" button, so dismiss the dialog
-                    // and continue editing the pet.
+                    // and continue editing the item.
                     if (dialog != null) {
                         dialog.dismiss();
                     }
@@ -386,13 +386,13 @@ import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
             builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     // User clicked the "Delete" button, so delete the pet.
-                    deletePet();
+                    deleteItem();
                 }
             });
             builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     // User clicked the "Cancel" button, so dismiss the dialog
-                    // and continue editing the pet.
+                    // and continue editing the item.
                     if (dialog != null) {
                         dialog.dismiss();
                     }
@@ -405,13 +405,13 @@ import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
         }
 
         /**
-         * Perform the deletion of the pet in the database.
+         * Perform the deletion of the item in the database.
          */
-        private void deletePet() {
-            // Only perform the delete if this is an existing pet.
+        private void deleteItem() {
+            // Only perform the delete if this is an existing item.
             if (mCurrentitemUri != null) {
-                // Call the ContentResolver to delete the pet at the given content URI.
-                // Pass in null for the selection and selection args because the mCurrentPetUri
+                // Call the ContentResolver to delete the item at the given content URI.
+                // Pass in null for the selection and selection args because the mCurrentItemUri
                 // content URI already identifies the pet that we want.
                 int rowsDeleted = getContentResolver().delete(mCurrentitemUri, null, null);
 

@@ -13,12 +13,14 @@ import android.util.Log;
 
 import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
 
+import java.util.Objects;
+
 public class itemProvider extends ContentProvider{
 
     /** URI matcher code for the content URI for the inventory table */
     private static final int ITEM = 100;
 
-    /** URI matcher code for the content URI for a single pet in the pets table */
+    /** URI matcher code for the content URI for a single pet in the items table */
     private static final int ITEM_ID = 101;
 
     /**
@@ -34,18 +36,7 @@ public class itemProvider extends ContentProvider{
         // should recognize. All paths added to the UriMatcher have a corresponding code to return
         // when a match is found.
 
-        // The content URI of the form "content://com.example.android.pets/pets" will map to the
-        // integer code {@link #PETS}. This URI is used to provide access to MULTIPLE rows
-        // of the pets table.
         sUriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY, InventoryContract.PATH_ITEM, ITEM);
-
-        // The content URI of the form "content://com.example.android.pets/pets/#" will map to the
-        // integer code {@link #PET_ID}. This URI is used to provide access to ONE single row
-        // of the pets table.
-        //
-        // In this case, the "#" wildcard is used where "#" can be substituted for an integer.
-        // For example, "content://com.example.android.pets/pets/3" matches, but
-        // "content://com.example.android.pets/pets" (without a number at the end) doesn't match.
         sUriMatcher.addURI(InventoryContract.CONTENT_AUTHORITY, InventoryContract.PATH_ITEM + "/#", ITEM_ID);
     }
 
@@ -59,7 +50,7 @@ public class itemProvider extends ContentProvider{
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs,
                         String sortOrder) {
         // Get readable database
         SQLiteDatabase database = mDbHelper.getReadableDatabase();
@@ -71,15 +62,14 @@ public class itemProvider extends ContentProvider{
         int match = sUriMatcher.match(uri);
         switch (match) {
             case ITEM:
-                // For the PETS code, query the pets table directly with the given
+                // For the ITEM code, query the items table directly with the given
                 // projection, selection, selection arguments, and sort order. The cursor
-                // could contain multiple rows of the pets table.
+                // could contain multiple rows of the items table.
                 cursor = database.query(InventoryEntry.TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
                 break;
             case ITEM_ID:
-                // For the PET_ID code, extract out the ID from the URI.
-                // For an example URI such as "content://com.example.android.pets/pets/3",
+                // For the ITEM_ID code, extract out the ID from the URI.
                 // the selection will be "_id=?" and the selection argument will be a
                 // String array containing the actual ID of 3 in this case.
                 //
@@ -89,7 +79,7 @@ public class itemProvider extends ContentProvider{
                 selection = InventoryEntry._ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
 
-                // This will perform a query on the pets table where the _id equals 3 to return a
+                // This will perform a query on the items table where the _id equals 3 to return a
                 // Cursor containing that row of the table.
                 cursor = database.query(InventoryEntry.TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
@@ -101,7 +91,7 @@ public class itemProvider extends ContentProvider{
         // Set notification URI on the Cursor,
         // so we know what content URI the Cursor was created for.
         // If the data at this URI changes, then we know we need to update the Cursor.
-        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        cursor.setNotificationUri( Objects.requireNonNull ( getContext () ).getContentResolver(), uri);
 
         // Return the cursor
         return cursor;
@@ -114,21 +104,21 @@ public class itemProvider extends ContentProvider{
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues contentValues) {
+    public Uri insert(@NonNull Uri uri, ContentValues contentValues) {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case ITEM:
-                return insertPet(uri, contentValues);
+                return insertItem(uri, contentValues);
             default:
                 throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
     }
 
     /**
-     * Insert a pet into the database with the given content values. Return the new content URI
+     * Insert a items into the database with the given content values. Return the new content URI
      * for that specific row in the database.
      */
-    private Uri insertPet(Uri uri, ContentValues values) {
+    private Uri insertItem(Uri uri, ContentValues values) {
         // Check that the name is not null
         String name = values.getAsString(InventoryEntry.COLUMN_PRODUCT_NAME);
         if (name == null) {
@@ -153,7 +143,7 @@ public class itemProvider extends ContentProvider{
             throw new IllegalArgumentException("Supplier requires a quantity");
         }
 
-        // Check that the supplier Name is not null
+        // Check that the supplier Phone is not null
         String suppPhone = values.getAsString(InventoryEntry.COLUMN_SUPPLIER_PHONE);
         if (suppPhone == null) {
             throw new IllegalArgumentException("Supplier requires a phone number");
@@ -171,38 +161,37 @@ public class itemProvider extends ContentProvider{
         }
 
         // Notify all listeners that the data has changed for the pet content URI
-        getContext().getContentResolver().notifyChange(uri, null);
+        Objects.requireNonNull ( getContext () ).getContentResolver().notifyChange(uri, null);
 
         // Return the new URI with the ID (of the newly inserted row) appended at the end
         return ContentUris.withAppendedId(uri, id);
     }
 
     @Override
-    public int update(Uri uri, ContentValues contentValues, String selection,
+    public int update(@NonNull Uri uri, ContentValues contentValues, String selection,
                       String[] selectionArgs) {
         final int match = sUriMatcher.match(uri);
         switch (match) {
             case ITEM:
-                return updatePet(uri, contentValues, selection, selectionArgs);
+                return updateItem( Objects.requireNonNull ( uri ), contentValues, selection, selectionArgs);
             case ITEM_ID:
                 // For the ITEM_ID code, extract out the ID from the URI,
                 // so we know which row to update. Selection will be "_id=?" and selection
                 // arguments will be a String array containing the actual ID.
                 selection = InventoryEntry._ID + "=?";
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
-                return updatePet(uri, contentValues, selection, selectionArgs);
+                return updateItem(uri, contentValues, selection, selectionArgs);
             default:
                 throw new IllegalArgumentException("Update is not supported for " + uri);
         }
     }
 
     /**
-     * Update pets in the database with the given content values. Apply the changes to the rows
-     * specified in the selection and selection arguments (which could be 0 or 1 or more pets).
+     * Update items in the database with the given content values. Apply the changes to the rows
      * Return the number of rows that were successfully updated.
      */
-    private int updatePet(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        // If the {@link PetEntry#COLUMN_PET_NAME} key is present,
+    private int updateItem(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        // If the key is present,
         // check that the name value is not null.
         if (values.containsKey(InventoryEntry.COLUMN_PRODUCT_NAME)) {
             String name = values.getAsString(InventoryEntry.COLUMN_PRODUCT_NAME);
@@ -211,7 +200,7 @@ public class itemProvider extends ContentProvider{
             }
         }
 
-        // If the {@link PetEntry#COLUMN_PET_GENDER} key is present,
+        // If the key is present,
         // check that the gender value is valid.
         if (values.containsKey(InventoryEntry.COLUMN_PRODUCT_PRICE)) {
             Integer price = values.getAsInteger(InventoryEntry.COLUMN_PRODUCT_PRICE);
@@ -220,7 +209,7 @@ public class itemProvider extends ContentProvider{
             }
         }
 
-        // If the {@link PetEntry#COLUMN_PET_WEIGHT} key is present,
+        // If the key is present,
         // check that the weight value is valid.
         if (values.containsKey(InventoryEntry.COLUMN_PRODUCT_QUANTITY)) {
             Integer quantity = values.getAsInteger(InventoryEntry.COLUMN_PRODUCT_QUANTITY);
@@ -258,7 +247,7 @@ public class itemProvider extends ContentProvider{
         // If 1 or more rows were updated, then notify all listeners that the data at the
         // given URI has changed
         if (rowsUpdated != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+            Objects.requireNonNull ( getContext () ).getContentResolver().notifyChange(uri, null);
         }
 
         // Return the number of rows updated
@@ -266,7 +255,7 @@ public class itemProvider extends ContentProvider{
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         // Get writeable database
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
 
@@ -292,7 +281,7 @@ public class itemProvider extends ContentProvider{
         // If 1 or more rows were deleted, then notify all listeners that the data at the
         // given URI has changed
         if (rowsDeleted != 0) {
-            getContext().getContentResolver().notifyChange(uri, null);
+            Objects.requireNonNull ( getContext () ).getContentResolver().notifyChange(uri, null);
         }
 
         // Return the number of rows deleted

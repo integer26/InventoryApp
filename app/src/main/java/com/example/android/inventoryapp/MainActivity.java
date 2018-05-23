@@ -27,7 +27,7 @@ import com.example.android.inventoryapp.data.InventoryDbHelper;
 public class MainActivity extends AppCompatActivity  implements
         LoaderManager.LoaderCallbacks<Cursor>{
 
-    /** Identifier for the pet data loader */
+    /** Identifier for the item data loader */
     private static final int ITEM_LOADER = 0;
 
     /** Adapter for the ListView */
@@ -56,11 +56,11 @@ public class MainActivity extends AppCompatActivity  implements
 
 
 
-    // Find the ListView which will be populated with the pet data
+    // Find the ListView which will be populated with the item data
     ListView itemsListView = (ListView) findViewById(R.id.elementList);
 
-    // Setup an Adapter to create a list item for each row of pet data in the Cursor.
-    // There is no pet data yet (until the loader finishes) so pass in null for the Cursor.
+    // Setup an Adapter to create a list item for each row of item data in the Cursor.
+    // There is no item data yet (until the loader finishes) so pass in null for the Cursor.
     mCursorAdapter = new ItemCursorAdapter (this, null);
         itemsListView.setAdapter(mCursorAdapter);
 
@@ -72,16 +72,14 @@ public class MainActivity extends AppCompatActivity  implements
             Intent intent = new Intent(MainActivity.this, EditorActivity.class);
 
             // Form the content URI that represents the specific pet that was clicked on,
-            // by appending the "id" (passed as input to this method) onto the
-            // {@link PetEntry#CONTENT_URI}.
-            // For example, the URI would be "content://com.example.android.pets/pets/2"
+            // by appending the "id" (passed as input to this method) onto the ItemURI.
             // if the pet with ID 2 was clicked on.
             Uri currentPetUri = ContentUris.withAppendedId(InventoryEntry.CONTENT_URI, id);
 
             // Set the URI on the data field of the intent
             intent.setData(currentPetUri);
 
-            // Launch the {@link EditorActivity} to display the data for the current pet.
+            // Launch the {@link EditorActivity} to display the data for the current item.
             startActivity(intent);
         }
     });
@@ -100,7 +98,7 @@ public class MainActivity extends AppCompatActivity  implements
 
         ContentValues values = new ContentValues ();
         values.put ( InventoryEntry.COLUMN_PRODUCT_NAME, "TV" );
-        values.put ( InventoryEntry.COLUMN_PRODUCT_PRICE, 199.99 );
+        values.put ( InventoryEntry.COLUMN_PRODUCT_PRICE, 199 );
         values.put ( InventoryEntry.COLUMN_PRODUCT_QUANTITY, 3 );
         values.put ( InventoryEntry.COLUMN_SUPPLIER_NAME, "SamZon International" );
         values.put ( InventoryEntry.COLUMN_SUPPLIER_PHONE, "+00 111.222.333.4" );
@@ -108,14 +106,14 @@ public class MainActivity extends AppCompatActivity  implements
         // Insert a new row for Toto into the provider using the ContentResolver.
         // Use the {@link PetEntry#CONTENT_URI} to indicate that we want to insert
         // into the pets database table.
-        // Receive the new content URI that will allow us to access Toto's data in the future.
+        // Receive the new content URI that will allow us to access TV's data in the future.
         Uri newUri = getContentResolver().insert(InventoryEntry.CONTENT_URI, values);
 
 
     }
 
     /**
-     * Helper method to delete all pets in the database.
+     * Helper method to delete all item in the database.
      */
     private void deleteAllInventory() {
         int rowsDeleted = getContentResolver().delete(InventoryEntry.CONTENT_URI, null, null);
@@ -140,7 +138,7 @@ public class MainActivity extends AppCompatActivity  implements
             case R.id.action1_settings:
                 insertItem ();
                 return true;
-            // Respond to a click on the "Delete all entries" menu option
+            // Respond to a click on the "Delete all" menu option
             case R.id.action2_settings:
                 deleteAllInventory ();
                 return true;
@@ -171,7 +169,7 @@ public class MainActivity extends AppCompatActivity  implements
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        // Update {@link PetCursorAdapter} with this new cursor containing updated pet data
+        // Update {@link PetCursorAdapter} with this new cursor containing updated item data
         mCursorAdapter.swapCursor(data);
     }
 
