@@ -16,4 +16,22 @@
     <string name="cancel">Cancel</string>
     <string name="editor_delete_item_failed">unable to delete the item</string>
     <string name="editor_delete_item_successful">item deleted</string>
+    <string name="new_item_title">New Item</string>
+    <string name="edit_item_title">Edit Item</string>
+    <string name="negative">Can not set a negative inventory quantity</string>
+    <string name="recap_msg1">I want to buy</string>
+    <string name="recap_msg2">Please confirm me that you can send me it to me.</string>
+    <string name="email">abc@gmail.com</string>
+    <string name="email_subject">Order</string>
+    <string name="email_title_intent">Send email</string>
+    <string name="out_of_stock_msg">This item is out of stock</string>
+    <string name="product_name_hint">Product Name</string>
+    <string name="product_price_hint">Product Price</string>
+    <string name="product_quantity">Product Quantity</string>
+    <string name="supplier_name_hint">Supplier Name</string>
+    <string name="supplier_phone_hint">Supplier Phone</string>
+    <string name="add_btn">+</string>
+    <string name="sub_btn">-</string>
+    <string name="order">Order</string>
+    <string name="order_main">Order</string>
 </resources>

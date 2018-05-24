@@ -17,10 +17,10 @@ import android.widget.Toast;
 
 import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
 
-public class ItemCursorAdapter extends CursorAdapter{
+public class ItemCursorAdapter extends CursorAdapter {
 
     public ItemCursorAdapter(Context context, Cursor c) {
-        super(context, c, 0 /* flags */);
+        super ( context, c, 0 /* flags */ );
     }
 
     /**
@@ -35,7 +35,7 @@ public class ItemCursorAdapter extends CursorAdapter{
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         // Inflate a list item view using the layout specified in list_item.xml
-        return LayoutInflater.from(context).inflate(R.layout.element_item, parent, false);
+        return LayoutInflater.from ( context ).inflate ( R.layout.element_item, parent, false );
     }
 
     /**
@@ -64,19 +64,26 @@ public class ItemCursorAdapter extends CursorAdapter{
 
 
         // Find the columns of item attributes that we're interested in
-        int nameColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_PRODUCT_NAME);
-        int priceColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_PRODUCT_PRICE);
-        int quantityColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_PRODUCT_QUANTITY);
-        int suppNameColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_SUPPLIER_NAME);
-        int suppPhoneColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_SUPPLIER_PHONE);
+        int nameColumnIndex = cursor.getColumnIndex ( InventoryEntry.COLUMN_PRODUCT_NAME );
+        int priceColumnIndex = cursor.getColumnIndex ( InventoryEntry.COLUMN_PRODUCT_PRICE );
+        int quantityColumnIndex = cursor.getColumnIndex ( InventoryEntry.COLUMN_PRODUCT_QUANTITY );
+        int suppNameColumnIndex = cursor.getColumnIndex ( InventoryEntry.COLUMN_SUPPLIER_NAME );
+        int suppPhoneColumnIndex = cursor.getColumnIndex ( InventoryEntry.COLUMN_SUPPLIER_PHONE );
 
 
         // Read the pet attributes from the Cursor for the current item
-        String productName = cursor.getString(nameColumnIndex);
-        int productPrice = cursor.getInt (priceColumnIndex);
+        String productName = cursor.getString ( nameColumnIndex );
+        int productPrice = cursor.getInt ( priceColumnIndex );
         final int productQuantity = cursor.getInt ( quantityColumnIndex );
-        String suppName = cursor.getString(suppNameColumnIndex);
-        String suppPhone = cursor.getString (suppPhoneColumnIndex);
+        String suppName = cursor.getString ( suppNameColumnIndex );
+        String suppPhone = cursor.getString ( suppPhoneColumnIndex );
+
+        // Update the TextViews with the attributes for the current item
+        nameTextView.setText ( productName );
+        priceTextView.setText ( Integer.toString ( productPrice ) );
+        quantityTextView.setText ( Integer.toString ( productQuantity ) );
+        suppNameTextView.setText ( suppName );
+        suppPhoneTextView.setText ( suppPhone );
 
 
         // Get the order button view
@@ -120,18 +127,10 @@ public class ItemCursorAdapter extends CursorAdapter{
                     context.getContentResolver ().notifyChange ( CurrentProductUri, null );
                 } else {
                     // Show a message to the UI to inform the user for the 0 quantity of this product
-                    Toast.makeText ( v.getContext (), "This item is out of stock", Toast.LENGTH_SHORT ).show ();
+                    Toast.makeText ( v.getContext (), context.getString ( R.string.out_of_stock_msg ), Toast.LENGTH_SHORT ).show ();
                 }
             }
         } );
-
-
-        // Update the TextViews with the attributes for the current item
-        nameTextView.setText(productName);
-        priceTextView.setText(Integer.toString ( productPrice ));
-        quantityTextView.setText (Integer.toString ( productQuantity) );
-        suppNameTextView.setText ( suppName );
-        suppPhoneTextView.setText ( suppPhone );
 
     }
 

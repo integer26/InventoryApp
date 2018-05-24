@@ -1,44 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
 
-    <TextView
-        android:id="@+id/item_name"
+    >
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="@string/test_list"
-        />
-    <TextView
-        android:id="@+id/item_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/test_list"
-        />
-    <TextView
-        android:id="@+id/item_quantity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/test_list"
-        />
-    <TextView
-        android:id="@+id/item_supp_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/test_list"
-        />
-    <TextView
-        android:id="@+id/item_supp_phone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/test_list"
-        />
+        android:layout_marginStart="@dimen/margin_edit"
+        android:layout_marginTop="@dimen/margin_edit"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/test_list"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/name_size" />
+
+        <TextView
+            android:id="@+id/item_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/test_list"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/sit_dim" />
+
+        <TextView
+            android:id="@+id/item_quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/test_list"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/sit_dim" />
+
+        <TextView
+            android:id="@+id/item_supp_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/test_list"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/sit_dim" />
+
+        <TextView
+            android:id="@+id/item_supp_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/test_list"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/sit_dim" />
+
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/orderButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Order" />
+        android:layout_margin="@dimen/margin_edit"
+        android:focusable="false"
+        android:text="@string/order_main" />
+
 
 </LinearLayout>

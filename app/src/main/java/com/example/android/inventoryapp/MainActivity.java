@@ -21,13 +21,17 @@ import android.widget.ListView;
 import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
 
 
-public class MainActivity extends AppCompatActivity  implements
-        LoaderManager.LoaderCallbacks<Cursor>{
+public class MainActivity extends AppCompatActivity implements
+        LoaderManager.LoaderCallbacks<Cursor> {
 
-    /** Identifier for the item data loader */
+    /**
+     * Identifier for the item data loader
+     */
     private static final int ITEM_LOADER = 0;
 
-    /** Adapter for the ListView */
+    /**
+     * Adapter for the ListView
+     */
     ItemCursorAdapter mCursorAdapter;
 
 
@@ -38,17 +42,16 @@ public class MainActivity extends AppCompatActivity  implements
 
         // Setup FAB to open EditorActivity
         FloatingActionButton fab = findViewById ( R.id.fab );
-        fab.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener ( new View.OnClickListener () {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, EditorActivity.class);
-                startActivity(intent);
+                Intent intent = new Intent ( MainActivity.this, EditorActivity.class );
+                startActivity ( intent );
             }
-        });
+        } );
 
 
-
-    // Find the ListView which will be populated with the item data
+        // Find the ListView which will be populated with the item data
         ListView itemsListView = findViewById ( R.id.elementList );
 
         // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
@@ -57,33 +60,33 @@ public class MainActivity extends AppCompatActivity  implements
 
 
         // Setup an Adapter to create a list item for each row of item data in the Cursor.
-    // There is no item data yet (until the loader finishes) so pass in null for the Cursor.
-    mCursorAdapter = new ItemCursorAdapter (this, null);
-        itemsListView.setAdapter(mCursorAdapter);
+        // There is no item data yet (until the loader finishes) so pass in null for the Cursor.
+        mCursorAdapter = new ItemCursorAdapter ( this, null );
+        itemsListView.setAdapter ( mCursorAdapter );
 
-    // Setup the item click listener
-        itemsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-            // Create new intent to go to {@link EditorActivity}
-            Intent intent = new Intent(MainActivity.this, EditorActivity.class);
+        // Setup the item click listener
+        itemsListView.setOnItemClickListener ( new AdapterView.OnItemClickListener () {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                // Create new intent to go to {@link EditorActivity}
+                Intent intent = new Intent ( MainActivity.this, EditorActivity.class );
 
-            // Form the content URI that represents the specific pet that was clicked on,
-            // by appending the "id" (passed as input to this method) onto the ItemURI.
-            // if the pet with ID 2 was clicked on.
-            Uri currentPetUri = ContentUris.withAppendedId(InventoryEntry.CONTENT_URI, id);
+                // Form the content URI that represents the specific pet that was clicked on,
+                // by appending the "id" (passed as input to this method) onto the ItemURI.
+                // if the pet with ID 2 was clicked on.
+                Uri currentPetUri = ContentUris.withAppendedId ( InventoryEntry.CONTENT_URI, id );
 
-            // Set the URI on the data field of the intent
-            intent.setData(currentPetUri);
+                // Set the URI on the data field of the intent
+                intent.setData ( currentPetUri );
 
-            // Launch the {@link EditorActivity} to display the data for the current item.
-            startActivity(intent);
-        }
-    });
+                // Launch the {@link EditorActivity} to display the data for the current item.
+                startActivity ( intent );
+            }
+        } );
 
-    // Kick off the loader
-    getLoaderManager().initLoader(ITEM_LOADER, null, this);
-}
+        // Kick off the loader
+        getLoaderManager ().initLoader ( ITEM_LOADER, null, this );
+    }
 
 
     /**
@@ -104,7 +107,7 @@ public class MainActivity extends AppCompatActivity  implements
         // Use the {@link PetEntry#CONTENT_URI} to indicate that we want to insert
         // into the pets database table.
         // Receive the new content URI that will allow us to access TV's data in the future.
-        Uri newUri = getContentResolver().insert(InventoryEntry.CONTENT_URI, values);
+        Uri newUri = getContentResolver ().insert ( InventoryEntry.CONTENT_URI, values );
 
 
     }
@@ -113,8 +116,8 @@ public class MainActivity extends AppCompatActivity  implements
      * Helper method to delete all item in the database.
      */
     private void deleteAllInventory() {
-        int rowsDeleted = getContentResolver().delete(InventoryEntry.CONTENT_URI, null, null);
-        Log.v("CatalogActivity", rowsDeleted + " rows deleted from inventory database");
+        int rowsDeleted = getContentResolver ().delete ( InventoryEntry.CONTENT_URI, null, null );
+        Log.v ( "CatalogActivity", rowsDeleted + " rows deleted from inventory database" );
     }
 
 
@@ -122,7 +125,7 @@ public class MainActivity extends AppCompatActivity  implements
     // This method initialize the contents of the Activity's options menu.
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the Options Menu we specified in XML
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater ().inflate ( R.menu.main, menu );
         return true;
     }
 
@@ -130,7 +133,7 @@ public class MainActivity extends AppCompatActivity  implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // User clicked on a menu option in the app bar overflow menu
-        switch (item.getItemId()) {
+        switch (item.getItemId ()) {
             // Respond to a click on the "Insert dummy data" menu option
             case R.id.action1_settings:
                 insertItem ();
@@ -140,7 +143,7 @@ public class MainActivity extends AppCompatActivity  implements
                 deleteAllInventory ();
                 return true;
         }
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected ( item );
     }
 
     @Override
@@ -156,25 +159,25 @@ public class MainActivity extends AppCompatActivity  implements
         };
 
         // This loader will execute the ContentProvider's query method on a background thread
-        return new CursorLoader (this,   // Parent activity context
+        return new CursorLoader ( this,   // Parent activity context
                 InventoryEntry.CONTENT_URI,   // Provider content URI to query
                 projection,             // Columns to include in the resulting Cursor
                 null,                   // No selection clause
                 null,                   // No selection arguments
-                null);                  // Default sort order
+                null );                  // Default sort order
     }
 
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         // Update {@link PetCursorAdapter} with this new cursor containing updated item data
-        mCursorAdapter.swapCursor(data);
+        mCursorAdapter.swapCursor ( data );
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         // Callback called when the data needs to be deleted
-        mCursorAdapter.swapCursor(null);
+        mCursorAdapter.swapCursor ( null );
     }
 
 
