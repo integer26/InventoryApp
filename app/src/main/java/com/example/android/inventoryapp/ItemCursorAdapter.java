@@ -1,13 +1,19 @@
 package com.example.android.inventoryapp;
+
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.text.TextUtils;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
 
@@ -44,13 +50,17 @@ public class ItemCursorAdapter extends CursorAdapter{
      */
     @SuppressLint("SetTextI18n")
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void bindView(View view, final Context context, Cursor cursor) {
+
+        // Get the id of the current ListItem
+        final int id = cursor.getInt ( cursor.getColumnIndex ( InventoryEntry._ID ) );
+
         // Find individual views that we want to modify in the list item layout
-        TextView nameTextView = (TextView) view.findViewById(R.id.item_name);
-        TextView priceTextView = (TextView) view.findViewById(R.id.item_price);
-        TextView quantityTextView = (TextView) view.findViewById(R.id.item_quantity);
-        TextView suppNameTextView = (TextView) view.findViewById(R.id.item_supp_name);
-        TextView suppPhoneTextView = (TextView) view.findViewById(R.id.item_supp_phone);
+        TextView nameTextView = view.findViewById ( R.id.item_name );
+        TextView priceTextView = view.findViewById ( R.id.item_price );
+        TextView quantityTextView = view.findViewById ( R.id.item_quantity );
+        TextView suppNameTextView = view.findViewById ( R.id.item_supp_name );
+        TextView suppPhoneTextView = view.findViewById ( R.id.item_supp_phone );
 
 
         // Find the columns of item attributes that we're interested in
@@ -64,9 +74,56 @@ public class ItemCursorAdapter extends CursorAdapter{
         // Read the pet attributes from the Cursor for the current item
         String productName = cursor.getString(nameColumnIndex);
         int productPrice = cursor.getInt (priceColumnIndex);
-        int productQuantity = cursor.getInt (quantityColumnIndex);
+        final int productQuantity = cursor.getInt ( quantityColumnIndex );
         String suppName = cursor.getString(suppNameColumnIndex);
         String suppPhone = cursor.getString (suppPhoneColumnIndex);
+
+
+        // Get the order button view
+        Button orderButton = view.findViewById ( R.id.orderButton );
+
+        // Attach a listener to "Order" button to perform an update on the database
+        orderButton.setOnClickListener ( new View.OnClickListener () {
+            @Override
+            public void onClick(View v) {
+                // Create  ContentResolver object to update the database
+                ContentResolver resolver = context.getContentResolver ();
+
+                // Create ContentValues to select the right "key" to "value" pair to update
+                ContentValues values = new ContentValues ();
+
+                // If the quantity of the products is more than 0, then we can reduce ot by one
+                // We do not want any negative values
+                if (productQuantity > 0) {
+
+                    // Create a new uri for this product ( ListItem)
+                    Uri CurrentProductUri = ContentUris.withAppendedId ( InventoryEntry.CONTENT_URI, id );
+
+                    // Present a new variable to send the reduced quantity to database
+                    int currentAvailableQuantity = productQuantity;
+                    currentAvailableQuantity -= 1;
+
+                    // Assign the new variable of the quantity as a contentValue,
+                    // that will be updated into the database
+                    values.put ( InventoryEntry.COLUMN_PRODUCT_QUANTITY, currentAvailableQuantity );
+
+                    // Perform an update on the database
+                    resolver.update (
+                            CurrentProductUri,
+                            values,
+                            null,
+                            null
+                    );
+
+                    // Notify all listener to Update the UI
+                    // Now the quantity of this product is reduced on the UI
+                    context.getContentResolver ().notifyChange ( CurrentProductUri, null );
+                } else {
+                    // Show a message to the UI to inform the user for the 0 quantity of this product
+                    Toast.makeText ( v.getContext (), "This item is out of stock", Toast.LENGTH_SHORT ).show ();
+                }
+            }
+        } );
 
 
         // Update the TextViews with the attributes for the current item

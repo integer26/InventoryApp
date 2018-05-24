@@ -35,4 +35,10 @@
         android:hint="@string/test_list"
         />
 
+    <Button
+        android:id="@+id/orderButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Order" />
+
 </LinearLayout>

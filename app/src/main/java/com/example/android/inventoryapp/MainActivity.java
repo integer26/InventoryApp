@@ -7,7 +7,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,10 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
-import com.example.android.inventoryapp.data.InventoryDbHelper;
 
 
 public class MainActivity extends AppCompatActivity  implements
@@ -34,18 +31,13 @@ public class MainActivity extends AppCompatActivity  implements
     ItemCursorAdapter mCursorAdapter;
 
 
-    /**
-     * Database helper that will provide us access to the database
-     */
-    private InventoryDbHelper mDbHelper;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate ( savedInstanceState );
         setContentView ( R.layout.activity_main );
 
         // Setup FAB to open EditorActivity
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById ( R.id.fab );
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -57,9 +49,14 @@ public class MainActivity extends AppCompatActivity  implements
 
 
     // Find the ListView which will be populated with the item data
-    ListView itemsListView = (ListView) findViewById(R.id.elementList);
+        ListView itemsListView = findViewById ( R.id.elementList );
 
-    // Setup an Adapter to create a list item for each row of item data in the Cursor.
+        // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
+        View emptyView = findViewById ( R.id.empty_view );
+        itemsListView.setEmptyView ( emptyView );
+
+
+        // Setup an Adapter to create a list item for each row of item data in the Cursor.
     // There is no item data yet (until the loader finishes) so pass in null for the Cursor.
     mCursorAdapter = new ItemCursorAdapter (this, null);
         itemsListView.setAdapter(mCursorAdapter);
@@ -166,6 +163,7 @@ public class MainActivity extends AppCompatActivity  implements
                 null,                   // No selection arguments
                 null);                  // Default sort order
     }
+
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {

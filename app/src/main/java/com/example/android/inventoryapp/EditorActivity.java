@@ -10,18 +10,15 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
@@ -99,11 +96,11 @@ import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
             }
 
             // Find all relevant views that we will need to read user input from
-            mNameEditText = (EditText) findViewById(R.id.EditProdName);
-            mPriceEditText = (EditText) findViewById(R.id.EditProdPrice);
-            mquantityEditText = (EditText) findViewById(R.id.EditProdQuantity);
-            mSuppNameEditText = (EditText) findViewById(R.id.EditSuppName);
-            mSuppPhoneEditText = (EditText) findViewById(R.id.EditSuppPhone);
+            mNameEditText = findViewById ( R.id.EditProdName );
+            mPriceEditText = findViewById ( R.id.EditProdPrice );
+            mquantityEditText = findViewById ( R.id.EditProdQuantity );
+            mSuppNameEditText = findViewById ( R.id.EditSuppName );
+            mSuppPhoneEditText = findViewById ( R.id.EditSuppPhone );
 
             // Setup OnTouchListeners on all the input fields, so we can determine if the user
             // has touched or modified them. This will let us know if there are unsaved changes
@@ -302,6 +299,7 @@ import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
                     null);                  // Default sort order
         }
 
+        @SuppressLint("SetTextI18n")
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
             // Bail early if the cursor is null or there is less than 1 row in the cursor
@@ -324,12 +322,12 @@ import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
                 int price = cursor.getInt (priceColumnIndex);
                 int quantity = cursor.getInt(quantityColumnIndex);
                 String suppName = cursor.getString (suppNameColumnIndex);
-                String suppPhone = cursor.getString (suppPhoneColumnIndex);;
+                String suppPhone = cursor.getString ( suppPhoneColumnIndex );
 
                 // Update the views on the screen with the values from the database
                 mNameEditText.setText(name);
-                mPriceEditText.setText( price );
-                mquantityEditText.setText(quantity);
+                mPriceEditText.setText ( Integer.toString ( price ) );
+                mquantityEditText.setText ( Integer.toString ( quantity ) );
                 mSuppNameEditText.setText(suppName);
                 mSuppPhoneEditText.setText(suppPhone);
 
@@ -429,6 +427,42 @@ import com.example.android.inventoryapp.data.InventoryContract.InventoryEntry;
 
             // Close the activity
             finish();
+        }
+
+        @SuppressLint("SetTextI18n")
+        public void Add(View view) {
+
+            int quantity = Integer.parseInt ( mquantityEditText.getText ().toString () );
+            quantity++;
+            mquantityEditText.setText ( Integer.toString ( quantity ) );
+        }
+
+        @SuppressLint("SetTextI18n")
+        public void Sub(View view) {
+
+            int quantity = Integer.parseInt ( mquantityEditText.getText ().toString () );
+
+            if (quantity > 0) {
+                quantity--;
+                mquantityEditText.setText ( Integer.toString ( quantity ) );
+            } else {
+
+                Toast toast = Toast.makeText ( this, "Can not set a negative inventory quantity", Toast.LENGTH_LONG );
+                toast.show ();
+            }
+
+        }
+
+        public void Order(View view) {
+
+            String recap = "I want to buy " + mNameEditText.getText ().toString () + " Please confirm me that you can send me it to me.";
+
+            Intent emailIntent = new Intent ( Intent.ACTION_SENDTO, Uri.fromParts (
+                    "mailto", "abc@gmail.com", null ) );
+            emailIntent.putExtra ( Intent.EXTRA_SUBJECT, "Order" );
+            emailIntent.putExtra ( Intent.EXTRA_TEXT, recap );
+            startActivity ( Intent.createChooser ( emailIntent, "Send email" ) );
+
         }
 
 }
