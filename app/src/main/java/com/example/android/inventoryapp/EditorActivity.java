@@ -326,7 +326,7 @@ public class EditorActivity extends AppCompatActivity implements
         // Proceed with moving to the first row of the cursor and reading data from it
         // (This should be the only row in the cursor)
         if (cursor.moveToFirst ()) {
-            // Find the columns of pet attributes that we're interested in
+            // Find the columns of item attributes that we're interested in
             int nameColumnIndex = cursor.getColumnIndex ( InventoryEntry.COLUMN_PRODUCT_NAME );
             int priceColumnIndex = cursor.getColumnIndex ( InventoryEntry.COLUMN_PRODUCT_PRICE );
             int quantityColumnIndex = cursor.getColumnIndex ( InventoryEntry.COLUMN_PRODUCT_QUANTITY );
@@ -390,7 +390,7 @@ public class EditorActivity extends AppCompatActivity implements
     }
 
     /**
-     * Prompt the user to confirm that they want to delete this pet.
+     * Prompt the user to confirm that they want to delete this item.
      */
     private void showDeleteConfirmationDialog() {
         // Create an AlertDialog.Builder and set the message, and click listeners
